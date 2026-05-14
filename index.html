@@ -19,7 +19,7 @@
     text-align: center; 
     background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #f0dcc8 100%);
     color: #4a3728;
-    padding: 40px 20px;
+    padding: 40px 20px 60px 20px;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -66,12 +66,14 @@
     margin: 50px auto;
     flex-wrap: wrap;
     padding: 40px;
+    min-height: 450px;
   }
 
   .card-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .position-label {
@@ -118,6 +120,7 @@
     justify-content: center;
     font-size: 16px;
     border: 3px solid #c9a961;
+    overflow: hidden;
   }
   
   .card-front { 
@@ -160,24 +163,14 @@
     text-align: center;
     border: 3px solid #c9a961;
   }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
   
-  .card-back h3 { 
-    margin: 6px 0;
-    font-size: 0.75em;
-    font-family: 'Cinzel', serif;
-    color: #8b4513;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  .card-back p { 
-    font-size: 0.65em;
-    font-weight: normal;
-    margin: 0;
-    color: #6b5344;
-    font-style: normal;
-  }
-
   /* 按鈕設計 */
   button { 
     background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
@@ -212,7 +205,7 @@
 
   /* 結果文字 */
   #result-text { 
-    margin-top: 40px;
+    margin-top: 60px;
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -270,8 +263,7 @@
       <div class="card" id="card-past">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-past">
-          <h3 id="name-past"></h3>
-          <p id="orientation-past"></p>
+          <img class="card-image" id="img-past" src="" alt="card">
         </div>
       </div>
     </div>
@@ -284,8 +276,7 @@
       <div class="card" id="card-present">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-present">
-          <h3 id="name-present"></h3>
-          <p id="orientation-present"></p>
+          <img class="card-image" id="img-present" src="" alt="card">
         </div>
       </div>
     </div>
@@ -298,8 +289,7 @@
       <div class="card" id="card-future">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-future">
-          <h3 id="name-future"></h3>
-          <p id="orientation-future"></p>
+          <img class="card-image" id="img-future" src="" alt="card">
         </div>
       </div>
     </div>
@@ -309,95 +299,95 @@
 <div id="result-text"></div>
 
 <script>
-// 完整78張塔羅牌牌組
+// 完整78張塔羅牌牌組 with Rider-Waite images
 const tarotDeck = [
   // 大阿卡那 (0-21)
-  { name: "0. 愚者", upright: "新的開始、冒險、純真。", reversed: "魯莽、不負責任、錯失良機。" },
-  { name: "I. 魔術師", upright: "創造力、行動力、溝通。", reversed: "欺騙、缺乏自信、能力不足。" },
-  { name: "II. 女祭司", upright: "直覺、潛意識、神秘。", reversed: "隱藏的秘密、膚淺、情緒化。" },
-  { name: "III. 皇后", upright: "豐收、母性、感官的美好。", reversed: "過度放縱、依賴、資源浪費。" },
-  { name: "IV. 皇帝", upright: "權威、結構、穩定。", reversed: "專制、死板、失去控制。" },
-  { name: "V. 教皇", upright: "傳統、信仰、教育。", reversed: "盲從、叛逆、打破常規。" },
-  { name: "VI. 戀人", upright: "愛情、選擇、和諧。", reversed: "分離、錯誤的選擇、誘惑。" },
-  { name: "VII. 戰車", upright: "勝利、意志力、決心。", reversed: "失去控制、挫折、衝突。" },
-  { name: "VIII. 力量", upright: "內在力量、耐心、溫柔。", reversed: "脆弱、自我懷疑、軟弱。" },
-  { name: "IX. 隱者", upright: "反思、智慧、內省。", reversed: "孤立、隱藏、迷茫。" },
-  { name: "X. 命運輪", upright: "幸運、循環、新機會。", reversed: "厄運、停滯、逆轉。" },
-  { name: "XI. 正義", upright: "公正、真理、因果。", reversed: "不公正、欺騙、失衡。" },
-  { name: "XII. 吊人", upright: "犧牲、放手、新視角。", reversed: "執著、延遲、拒絕改變。" },
-  { name: "XIII. 死神", upright: "轉變、結束、新生。", reversed: "停滯、拒絕改變、恐懼。" },
-  { name: "XIV. 節制", upright: "平衡、調和、溫和。", reversed: "不平衡、衝動、過度。" },
-  { name: "XV. 魔鬼", upright: "束縛、物質、誘惑。", reversed: "解脫、放鬆、克服恐懼。" },
-  { name: "XVI. 高塔", upright: "突變、啟示、毀滅。", reversed: "避免災難、逃脫、解放。" },
-  { name: "XVII. 星星", upright: "希望、靈感、引導。", reversed: "絕望、失去方向、幻滅。" },
-  { name: "XVIII. 月亮", upright: "直覺、幻想、潛意識。", reversed: "清晰、幻覺結束、真相。" },
-  { name: "XIX. 太陽", upright: "成功、快樂、光明。", reversed: "失敗、悲傷、黑暗。" },
-  { name: "XX. 審判", upright: "覺醒、判決、重生。", reversed: "自我懷疑、延遲、否認。" },
-  { name: "XXI. 世界", upright: "完成、達成、統一。", reversed: "不完整、無法完成、分裂。" },
+  { name: "0. 愚者", image: "https://upload.wikimedia.org/wikipedia/en/9/9b/RWS_Tarot_00_Fool.jpg", upright: "新的開始、冒險、純真。", reversed: "魯莽、不負責任、錯失良機。" },
+  { name: "I. 魔術師", image: "https://upload.wikimedia.org/wikipedia/en/d/db/RWS_Tarot_01_Magician.jpg", upright: "創造力、行動力、溝通。", reversed: "欺騙、缺乏自信、能力不足。" },
+  { name: "II. 女祭司", image: "https://upload.wikimedia.org/wikipedia/en/8/8d/RWS_Tarot_02_High_Priestess.jpg", upright: "直覺、潛意識、神秘。", reversed: "隱藏的秘密、膚淺、情緒化。" },
+  { name: "III. 皇后", image: "https://upload.wikimedia.org/wikipedia/en/d/d2/RWS_Tarot_03_Empress.jpg", upright: "豐收、母性、感官的美好。", reversed: "過度放縱、依賴、資源浪費。" },
+  { name: "IV. 皇帝", image: "https://upload.wikimedia.org/wikipedia/en/c/c3/RWS_Tarot_04_Emperor.jpg", upright: "權威、結構、穩定。", reversed: "專制、死板、失去控制。" },
+  { name: "V. 教皇", image: "https://upload.wikimedia.org/wikipedia/en/8/8d/RWS_Tarot_05_Hierophant.jpg", upright: "傳統、信仰、教育。", reversed: "盲從、叛逆、打破常規。" },
+  { name: "VI. 戀人", image: "https://upload.wikimedia.org/wikipedia/en/d/db/RWS_Tarot_06_Lovers.jpg", upright: "愛情、選擇、和諧。", reversed: "分離、錯誤的選擇、誘惑。" },
+  { name: "VII. 戰車", image: "https://upload.wikimedia.org/wikipedia/en/9/9b/RWS_Tarot_07_Chariot.jpg", upright: "勝利、意志力、決心。", reversed: "失去控制、挫折、衝突。" },
+  { name: "VIII. 力量", image: "https://upload.wikimedia.org/wikipedia/en/f/f1/RWS_Tarot_08_Strength.jpg", upright: "內在力量、耐心、溫柔。", reversed: "脆弱、自我懷疑、軟弱。" },
+  { name: "IX. 隱者", image: "https://upload.wikimedia.org/wikipedia/en/0/0c/RWS_Tarot_09_Hermit.jpg", upright: "反思、智慧、內省。", reversed: "孤立、隱藏、迷茫。" },
+  { name: "X. 命運輪", image: "https://upload.wikimedia.org/wikipedia/en/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg", upright: "幸運、循環、新機會。", reversed: "厄運、停滯、逆轉。" },
+  { name: "XI. 正義", image: "https://upload.wikimedia.org/wikipedia/en/e/e0/RWS_Tarot_11_Justice.jpg", upright: "公正、真理、因果。", reversed: "不公正、欺騙、失衡。" },
+  { name: "XII. 吊人", image: "https://upload.wikimedia.org/wikipedia/en/e/e8/RWS_Tarot_12_Hanged_Man.jpg", upright: "犧牲、放手、新視角。", reversed: "執著、延遲、拒絕改變。" },
+  { name: "XIII. 死神", image: "https://upload.wikimedia.org/wikipedia/en/d/d7/RWS_Tarot_13_Death.jpg", upright: "轉變、結束、新生。", reversed: "停滯、拒絕改變、恐懼。" },
+  { name: "XIV. 節制", image: "https://upload.wikimedia.org/wikipedia/en/f/f7/RWS_Tarot_14_Temperance.jpg", upright: "平衡、調和、溫和。", reversed: "不平衡、衝動、過度。" },
+  { name: "XV. 魔鬼", image: "https://upload.wikimedia.org/wikipedia/en/6/6f/RWS_Tarot_15_Devil.jpg", upright: "束縛、物質、誘惑。", reversed: "解脫、放鬆、克服恐懼。" },
+  { name: "XVI. 高塔", image: "https://upload.wikimedia.org/wikipedia/en/5/53/RWS_Tarot_16_Tower.jpg", upright: "突變、啟示、毀滅。", reversed: "避免災難、逃脫、解放。" },
+  { name: "XVII. 星星", image: "https://upload.wikimedia.org/wikipedia/en/d/db/RWS_Tarot_17_Star.jpg", upright: "希望、靈感、引導。", reversed: "絕望、失去方向、幻滅。" },
+  { name: "XVIII. 月亮", image: "https://upload.wikimedia.org/wikipedia/en/7/7f/RWS_Tarot_18_Moon.jpg", upright: "直覺、幻想、潛意識。", reversed: "清晰、幻覺結束、真相。" },
+  { name: "XIX. 太陽", image: "https://upload.wikimedia.org/wikipedia/en/1/17/RWS_Tarot_19_Sun.jpg", upright: "成功、快樂、光明。", reversed: "失敗、悲傷、黑暗。" },
+  { name: "XX. 審判", image: "https://upload.wikimedia.org/wikipedia/en/d/dd/RWS_Tarot_20_Judgement.jpg", upright: "覺醒、判決、重生。", reversed: "自我懷疑、延遲、否認。" },
+  { name: "XXI. 世界", image: "https://upload.wikimedia.org/wikipedia/en/f/f0/RWS_Tarot_21_World.jpg", upright: "完成、達成、統一。", reversed: "不完整、無法完成、分裂。" },
 
   // 聖杯牌組 (22-35)
-  { name: "聖杯王牌", upright: "新的感情、靈感、新開始。", reversed: "機會流失、情感空虛。" },
-  { name: "聖杯二", upright: "合作、愛情、伙伴關係。", reversed: "分離、失衡、誤會。" },
-  { name: "聖杯三", upright: "慶祝、友誼、歡樂。", reversed: "過度放縱、虛偽的快樂。" },
-  { name: "聖杯四", upright: "冷淡、停滯、缺乏興趣。", reversed: "恢復、重新開始、新視角。" },
-  { name: "聖杯五", upright: "失望、失落、遺憾。", reversed: "寬恕、治療、放手。" },
-  { name: "聖杯六", upright: "懷舊、幸福、童年回憶。", reversed: "向前看、放棄過去。" },
-  { name: "聖杯七", upright: "幻想、選擇、機會。", reversed: "清晰、現實、不切實際。" },
-  { name: "聖杯八", upright: "放棄、轉身離開、逃避。", reversed: "新視角、回歸、完成。" },
-  { name: "聖杯九", upright: "幸福、滿足、夢想實現。", reversed: "不滿足、空虛、失望。" },
-  { name: "聖杯十", upright: "家庭和諧、愛與幸福。", reversed: "家庭不和、分裂。" },
-  { name: "聖杯侍者", upright: "敏感、年輕、有才華。", reversed: "不成熟、過度敏感。" },
-  { name: "聖杯騎士", upright: "浪漫、夢想家、創意。", reversed: "不切實際、逃避、懦弱。" },
-  { name: "聖杯皇后", upright: "有愛心、直覺、情感。", reversed: "情感波動、過度執著。" },
-  { name: "聖杯國王", upright: "智慧、溫和、精神領導。", reversed: "操縱、情感不穩定。" },
+  { name: "聖杯王牌", image: "https://upload.wikimedia.org/wikipedia/en/7/70/RWS_Tarot_Cups_Ace.jpg", upright: "新的感情、靈感、新開始。", reversed: "機會流失、情感空虛。" },
+  { name: "聖杯二", image: "https://upload.wikimedia.org/wikipedia/en/f/f8/RWS_Tarot_Cups_02.jpg", upright: "合作、愛情、伙伴關係。", reversed: "分離、失衡、誤會。" },
+  { name: "聖杯三", image: "https://upload.wikimedia.org/wikipedia/en/2/2b/RWS_Tarot_Cups_03.jpg", upright: "慶祝、友誼、歡樂。", reversed: "過度放縱、虛偽的快樂。" },
+  { name: "聖杯四", image: "https://upload.wikimedia.org/wikipedia/en/8/8b/RWS_Tarot_Cups_04.jpg", upright: "冷淡、停滯、缺乏興趣。", reversed: "恢復、重新開始、新視角。" },
+  { name: "聖杯五", image: "https://upload.wikimedia.org/wikipedia/en/5/54/RWS_Tarot_Cups_05.jpg", upright: "失望、失落、遺憾。", reversed: "寬恕、治療、放手。" },
+  { name: "聖杯六", image: "https://upload.wikimedia.org/wikipedia/en/6/6f/RWS_Tarot_Cups_06.jpg", upright: "懷舊、幸福、童年回憶。", reversed: "向前看、放棄過去。" },
+  { name: "聖杯七", image: "https://upload.wikimedia.org/wikipedia/en/8/83/RWS_Tarot_Cups_07.jpg", upright: "幻想、選擇、機會。", reversed: "清晰、現實、不切實際。" },
+  { name: "聖杯八", image: "https://upload.wikimedia.org/wikipedia/en/6/6f/RWS_Tarot_Cups_08.jpg", upright: "放棄、轉身離開、逃避。", reversed: "新視角、回歸、完成。" },
+  { name: "聖杯九", image: "https://upload.wikimedia.org/wikipedia/en/e/ea/RWS_Tarot_Cups_09.jpg", upright: "幸福、滿足、夢想實現。", reversed: "不滿足、空虛、失望。" },
+  { name: "聖杯十", image: "https://upload.wikimedia.org/wikipedia/en/5/5d/RWS_Tarot_Cups_10.jpg", upright: "家庭和諧、愛與幸福。", reversed: "家庭不和、分裂。" },
+  { name: "聖杯侍者", image: "https://upload.wikimedia.org/wikipedia/en/8/84/RWS_Tarot_Cups_Page.jpg", upright: "敏感、年輕、有才華。", reversed: "不成熟、過度敏感。" },
+  { name: "聖杯騎士", image: "https://upload.wikimedia.org/wikipedia/en/1/16/RWS_Tarot_Cups_Knight.jpg", upright: "浪漫、夢想家、創意。", reversed: "不切實際、逃避、懦弱。" },
+  { name: "聖杯皇后", image: "https://upload.wikimedia.org/wikipedia/en/3/3a/RWS_Tarot_Cups_Queen.jpg", upright: "有愛心、直覺、情感。", reversed: "情感波動、過度執著。" },
+  { name: "聖杯國王", image: "https://upload.wikimedia.org/wikipedia/en/e/e0/RWS_Tarot_Cups_King.jpg", upright: "智慧、溫和、精神領導。", reversed: "操縱、情感不穩定。" },
 
   // 權杖牌組 (36-49)
-  { name: "���杖王牌", upright: "靈感、新項目、激情。", reversed: "停滯、缺乏靈感、延遲。" },
-  { name: "權杖二", upright: "計畫、決策、遠景。", reversed: "困惑、無方向、猶豫。" },
-  { name: "權杖三", upright: "合作、遠景、成長。", reversed: "延遲、缺乏合作。" },
-  { name: "權杖四", upright: "慶祝、成功、和平。", reversed: "無聊、不穩定、衝突。" },
-  { name: "權杖五", upright: "競爭、衝突、挑戰。", reversed: "協議、避免衝突。" },
-  { name: "權杖六", upright: "成功、認可、領導。", reversed: "失敗、批評、失去信心。" },
-  { name: "權杖七", upright: "防衛、挑戰、堅持。", reversed: "放棄、退縮、信心不足。" },
-  { name: "權杖八", upright: "快速行動、能量、動力。", reversed: "延遲、缺乏方向。" },
-  { name: "權杖九", upright: "韌性、決心、邊界。", reversed: "懼怕、不安全、多疑。" },
-  { name: "權杖十", upright: "負擔、責任、壓力。", reversed: "放開、寬恕、輕鬆。" },
-  { name: "權杖侍者", upright: "勤奮、有才華、忠誠。", reversed: "缺乏方向、無紀律。" },
-  { name: "權杖騎士", upright: "充滿激情、冒險、浪漫。", reversed: "魯莽、好鬥、不負責任。" },
-  { name: "權杖皇后", upright: "有魅力、獨立、有熱情。", reversed: "嫉妒、任性、不友善。" },
-  { name: "權杖國王", upright: "領導、視野、力量。", reversed: "獨裁、傲慢、無能。" },
+  { name: "權杖王牌", image: "https://upload.wikimedia.org/wikipedia/en/0/0d/RWS_Tarot_Wands_Ace.jpg", upright: "靈感、新項目、激情。", reversed: "停滯、缺乏靈感、延遲。" },
+  { name: "權杖二", image: "https://upload.wikimedia.org/wikipedia/en/8/8e/RWS_Tarot_Wands_02.jpg", upright: "計畫、決策、遠景。", reversed: "困惑、無方向、猶豫。" },
+  { name: "權杖三", image: "https://upload.wikimedia.org/wikipedia/en/a/a4/RWS_Tarot_Wands_03.jpg", upright: "合作、遠景、成長。", reversed: "延遲、缺乏合作。" },
+  { name: "權杖四", image: "https://upload.wikimedia.org/wikipedia/en/4/47/RWS_Tarot_Wands_04.jpg", upright: "慶祝、成功、和平。", reversed: "無聊、不穩定、衝突。" },
+  { name: "權杖五", image: "https://upload.wikimedia.org/wikipedia/en/3/37/RWS_Tarot_Wands_05.jpg", upright: "競爭、衝突、挑戰。", reversed: "協議、避免衝突。" },
+  { name: "權杖六", image: "https://upload.wikimedia.org/wikipedia/en/d/de/RWS_Tarot_Wands_06.jpg", upright: "成功、認可、領導。", reversed: "失敗、批評、失去信心。" },
+  { name: "權杖七", image: "https://upload.wikimedia.org/wikipedia/en/6/68/RWS_Tarot_Wands_07.jpg", upright: "防衛、挑戰、堅持。", reversed: "放棄、退縮、信心不足。" },
+  { name: "權杖八", image: "https://upload.wikimedia.org/wikipedia/en/a/ae/RWS_Tarot_Wands_08.jpg", upright: "快速行動、能量、動力。", reversed: "延遲、缺乏方向。" },
+  { name: "權杖九", image: "https://upload.wikimedia.org/wikipedia/en/3/3e/RWS_Tarot_Wands_09.jpg", upright: "韌性、決心、邊界。", reversed: "懼怕、不安全、多疑。" },
+  { name: "權杖十", image: "https://upload.wikimedia.org/wikipedia/en/7/74/RWS_Tarot_Wands_10.jpg", upright: "負擔、責任、壓力。", reversed: "放開、寬恕、輕鬆。" },
+  { name: "權杖侍者", image: "https://upload.wikimedia.org/wikipedia/en/d/d5/RWS_Tarot_Wands_Page.jpg", upright: "勤奮、有才華、忠誠。", reversed: "缺乏方向、無紀律。" },
+  { name: "權杖騎士", image: "https://upload.wikimedia.org/wikipedia/en/5/56/RWS_Tarot_Wands_Knight.jpg", upright: "充滿激情、冒險、浪漫。", reversed: "魯莽、好鬥、不負責任。" },
+  { name: "權杖皇后", image: "https://upload.wikimedia.org/wikipedia/en/7/70/RWS_Tarot_Wands_Queen.jpg", upright: "有魅力、獨立、有熱情。", reversed: "嫉妒、任性、不友善。" },
+  { name: "權杖國王", image: "https://upload.wikimedia.org/wikipedia/en/d/d5/RWS_Tarot_Wands_King.jpg", upright: "領導、視野、力量。", reversed: "獨裁、傲慢、無能。" },
 
   // 寶劍牌組 (50-63)
-  { name: "寶劍王牌", upright: "真理、清晰、突破。", reversed: "混亂、無法溝通。" },
-  { name: "寶劍二", upright: "衝突、困境、僵局。", reversed: "解決方案、協議。" },
-  { name: "寶劍三", upright: "心碎、悲傷、痛苦。", reversed: "治療、寬恕、恢復。" },
-  { name: "寶劍四", upright: "休息、冥想、安定。", reversed: "不安定、混亂、衝突。" },
-  { name: "寶劍五", upright: "衝突、失敗、悲傷。", reversed: "原諒、仁慈、和解。" },
-  { name: "寶劍六", upright: "旅程、過渡、悲傷。", reversed: "進展、完成旅程。" },
-  { name: "寶劍七", upright: "竊取、背叛、間諜。", reversed: "真實顯露、警惕。" },
-  { name: "寶劍八", upright: "困境、被束縛、困惑。", reversed: "逃脫、自由、澄清。" },
-  { name: "寶劍九", upright: "絕望、恐懼、焦慮。", reversed: "希望、康復、勇氣。" },
-  { name: "寶劍十", upright: "痛苦、結束、背叛。", reversed: "康復、結束痛苦。" },
-  { name: "寶劍侍者", upright: "觀察者、感知、訊息。", reversed: "缺乏感知、消息延遲。" },
-  { name: "寶劍騎士", upright: "勇敢、激進、理性。", reversed: "衝動、無謀、不成熟。" },
-  { name: "寶劍皇后", upright: "獨立、敏銳、智慧。", reversed: "冷酷、殘酷、偏見。" },
-  { name: "寶劍國王", upright: "真理、正義、清晰。", reversed: "殘酷、虛偽、混亂。" },
+  { name: "寶劍王牌", image: "https://upload.wikimedia.org/wikipedia/en/1/1a/RWS_Tarot_Swords_Ace.jpg", upright: "真理、清晰、突破。", reversed: "混亂、無法溝通。" },
+  { name: "寶劍二", image: "https://upload.wikimedia.org/wikipedia/en/a/a6/RWS_Tarot_Swords_02.jpg", upright: "衝突、困境、僵局。", reversed: "解決方案、協議。" },
+  { name: "寶劍三", image: "https://upload.wikimedia.org/wikipedia/en/5/53/RWS_Tarot_Swords_03.jpg", upright: "心碎、悲傷、痛苦。", reversed: "治療、寬恕、恢復。" },
+  { name: "寶劍四", image: "https://upload.wikimedia.org/wikipedia/en/f/f8/RWS_Tarot_Swords_04.jpg", upright: "休息、冥想、安定。", reversed: "不安定、混亂、衝突。" },
+  { name: "寶劍五", image: "https://upload.wikimedia.org/wikipedia/en/8/8b/RWS_Tarot_Swords_05.jpg", upright: "衝突、失敗、悲傷。", reversed: "原諒、仁慈、和解。" },
+  { name: "寶劍六", image: "https://upload.wikimedia.org/wikipedia/en/7/71/RWS_Tarot_Swords_06.jpg", upright: "旅程、過渡、悲傷。", reversed: "進展、完成旅程。" },
+  { name: "寶劍七", image: "https://upload.wikimedia.org/wikipedia/en/8/8d/RWS_Tarot_Swords_07.jpg", upright: "竊取、背叛、間諜。", reversed: "真實顯露、警惕。" },
+  { name: "寶劍八", image: "https://upload.wikimedia.org/wikipedia/en/c/c7/RWS_Tarot_Swords_08.jpg", upright: "困境、被束縛、困惑。", reversed: "逃脫、自由、澄清。" },
+  { name: "寶劍九", image: "https://upload.wikimedia.org/wikipedia/en/5/50/RWS_Tarot_Swords_09.jpg", upright: "絕望、恐懼、焦慮。", reversed: "希望、康復、勇氣。" },
+  { name: "寶劍十", image: "https://upload.wikimedia.org/wikipedia/en/f/f0/RWS_Tarot_Swords_10.jpg", upright: "痛苦、結束、背叛。", reversed: "康復、結束痛苦。" },
+  { name: "寶劍侍者", image: "https://upload.wikimedia.org/wikipedia/en/5/51/RWS_Tarot_Swords_Page.jpg", upright: "觀察者、感知、訊息。", reversed: "缺乏感知、消息延遲。" },
+  { name: "寶劍騎士", image: "https://upload.wikimedia.org/wikipedia/en/9/92/RWS_Tarot_Swords_Knight.jpg", upright: "勇敢、激進、理性。", reversed: "衝動、無謀、不成熟。" },
+  { name: "寶劍皇后", image: "https://upload.wikimedia.org/wikipedia/en/d/d4/RWS_Tarot_Swords_Queen.jpg", upright: "獨立、敏銳、智慧。", reversed: "冷酷、殘酷、偏見。" },
+  { name: "寶劍國王", image: "https://upload.wikimedia.org/wikipedia/en/a/ae/RWS_Tarot_Swords_King.jpg", upright: "真理、正義、清晰。", reversed: "殘酷、虛偽、混亂。" },
 
   // 錢幣牌組 (64-77)
-  { name: "錢幣王牌", upright: "豐盛、繁榮、新機會。", reversed: "貧窮、資源不足。" },
-  { name: "錢幣二", upright: "平衡、靈活、決策。", reversed: "不平衡、延遲、失衡。" },
-  { name: "錢幣三", upright: "合作、工作小組、技能。", reversed: "缺乏技能、無法合作。" },
-  { name: "錢幣四", upright: "豐盛、財富、守財。", reversed: "貪婪、失去、奢侈。" },
-  { name: "錢幣五", upright: "貧困、困難、困境。", reversed: "恢復、幫助、改善。" },
-  { name: "錢幣六", upright: "給予、獲得、慷慨。", reversed: "自私、不平等、虐待。" },
-  { name: "錢幣七", upright: "成長、收穫、投資回報。", reversed: "缺乏成長、停滯、浪費。" },
-  { name: "錢幣八", upright: "學徒、技能、勤奮。", reversed: "不夠熟練、過度工作。" },
-  { name: "錢幣九", upright: "豐裕、自給自足、安全。", reversed: "不安全、焦慮、浪費。" },
-  { name: "錢幣十", upright: "財富、家庭、遺產。", reversed: "家庭衝突、財務問題。" },
-  { name: "錢幣侍者", upright: "學生、信使、謹慎。", reversed: "虛度、缺乏野心。" },
-  { name: "錢幣騎士", upright: "可靠、勤奮、負責任。", reversed: "懶惰、不可靠、浪費。" },
-  { name: "錢幣皇后", upright: "實踐、安全、丰富。", reversed: "浪費、不安全、匱乏。" },
-  { name: "錢幣國王", upright: "財富、商業、領導力。", reversed: "無能、不穩定、貪婪。" }
+  { name: "錢幣王牌", image: "https://upload.wikimedia.org/wikipedia/en/0/0c/RWS_Tarot_Pents_Ace.jpg", upright: "豐盛、繁榮、新機會。", reversed: "貧窮、資源不足。" },
+  { name: "錢幣二", image: "https://upload.wikimedia.org/wikipedia/en/a/ab/RWS_Tarot_Pents_02.jpg", upright: "平衡、靈活、決策。", reversed: "不平衡、延遲、失衡。" },
+  { name: "錢幣三", image: "https://upload.wikimedia.org/wikipedia/en/6/6b/RWS_Tarot_Pents_03.jpg", upright: "合作、工作小組、技能。", reversed: "缺乏技能、無法合作。" },
+  { name: "錢幣四", image: "https://upload.wikimedia.org/wikipedia/en/8/8f/RWS_Tarot_Pents_04.jpg", upright: "豐盛、財富、守財。", reversed: "貪婪、失去、奢侈。" },
+  { name: "錢幣五", image: "https://upload.wikimedia.org/wikipedia/en/d/d7/RWS_Tarot_Pents_05.jpg", upright: "貧困、困難、困境。", reversed: "恢復、幫助、改善。" },
+  { name: "錢幣六", image: "https://upload.wikimedia.org/wikipedia/en/3/3c/RWS_Tarot_Pents_06.jpg", upright: "給予、獲得、慷慨。", reversed: "自私、不平等、虐待。" },
+  { name: "錢幣七", image: "https://upload.wikimedia.org/wikipedia/en/f/fb/RWS_Tarot_Pents_07.jpg", upright: "成長、收穫、投資回報。", reversed: "缺乏成長、停滯、浪費。" },
+  { name: "錢幣八", image: "https://upload.wikimedia.org/wikipedia/en/f/f5/RWS_Tarot_Pents_08.jpg", upright: "學徒、技能、勤奮。", reversed: "不夠熟練、過度工作。" },
+  { name: "錢幣九", image: "https://upload.wikimedia.org/wikipedia/en/d/d0/RWS_Tarot_Pents_09.jpg", upright: "豐裕、自給自足、安全。", reversed: "不安全、焦慮、浪費。" },
+  { name: "錢幣十", image: "https://upload.wikimedia.org/wikipedia/en/3/38/RWS_Tarot_Pents_10.jpg", upright: "財富、家庭、遺產。", reversed: "家庭衝突、財務問題。" },
+  { name: "錢幣侍者", image: "https://upload.wikimedia.org/wikipedia/en/8/8b/RWS_Tarot_Pents_Page.jpg", upright: "學生、信使、謹慎。", reversed: "虛度、缺乏野心。" },
+  { name: "錢幣騎士", image: "https://upload.wikimedia.org/wikipedia/en/3/3c/RWS_Tarot_Pents_Knight.jpg", upright: "可靠、勤奮、負責任。", reversed: "懶惰、不可靠、浪費。" },
+  { name: "錢幣皇后", image: "https://upload.wikimedia.org/wikipedia/en/7/7d/RWS_Tarot_Pents_Queen.jpg", upright: "實踐、安全、丰富。", reversed: "浪費、不安全、匱乏。" },
+  { name: "錢幣國王", image: "https://upload.wikimedia.org/wikipedia/en/a/ae/RWS_Tarot_Pents_King.jpg", upright: "財富、商業、領導力。", reversed: "無能、不穩定、貪婪。" }
 ];
 
 const positions = ['past', 'present', 'future'];
@@ -439,20 +429,19 @@ function drawCards() {
       const isReversed = Math.random() > 0.5;
       const pos = positions[i];
       
-      document.getElementById(`name-${pos}`).innerText = selectedCard.name;
-      const orientationEl = document.getElementById(`orientation-${pos}`);
+      // Update image
+      const imgEl = document.getElementById(`img-${pos}`);
+      imgEl.src = selectedCard.image;
+      imgEl.alt = selectedCard.name;
+      
       const backEl = document.getElementById(`back-${pos}`);
       
       let interpretation = "";
 
       if (isReversed) {
-        orientationEl.innerText = "(逆位)";
-        orientationEl.style.color = "#a0522d";
         backEl.style.transform = "rotateY(180deg) rotateZ(180deg)";
         interpretation = selectedCard.reversed;
       } else {
-        orientationEl.innerText = "(正位)";
-        orientationEl.style.color = "#8b4513";
         backEl.style.transform = "rotateY(180deg) rotateZ(0deg)";
         interpretation = selectedCard.upright;
       }

@@ -14,12 +14,17 @@
     box-sizing: border-box;
   }
 
+  html, body { 
+    width: 100%;
+    height: 100%;
+  }
+
   body { 
     font-family: 'Open Sans', 'Segoe UI', Arial, sans-serif; 
     text-align: center; 
     background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 50%, #A8C7BB 100%);
     color: #392F5A;
-    padding: 40px 20px 60px 20px;
+    padding: 40px 20px;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -58,35 +63,37 @@
     font-family: 'Open Sans', sans-serif;
   }
 
-  /* 牌陣容器 - 固定高度防止位移 */
+  /* 牌陣容器 - 固定佈局防止位移 */
   .spread-container {
     display: flex;
     justify-content: center;
-    gap: 50px;
-    margin: 50px auto;
-    flex-wrap: wrap;
-    padding: 40px;
-    height: 420px;
     align-items: flex-start;
+    gap: 50px;
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 1200px;
   }
 
   .card-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 200px;
     flex-shrink: 0;
-    height: 100%;
   }
 
   .position-label {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.3em;
     font-weight: bold;
     color: #392F5A;
     letter-spacing: 2px;
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
-    flex-shrink: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* 塔羅牌容器與翻轉效果 */
@@ -95,13 +102,12 @@
     height: 270px;
     perspective: 1000px;
     cursor: pointer;
-    flex-shrink: 0;
   }
   
   .card { 
     width: 100%;
     height: 100%;
-    transition: transform 0.8s;
+    transition: transform 0.8s ease-in-out;
     transform-style: preserve-3d;
     position: relative;
     box-shadow: 0 8px 20px rgba(57, 47, 90, 0.3);
@@ -122,9 +128,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
     border: 3px solid #A8C7BB;
-    overflow: hidden;
   }
   
   .card-front { 
@@ -161,17 +165,31 @@
     background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 50%, #A8C7BB 100%);
     color: #392F5A;
     transform: rotateY(180deg);
-    flex-direction: column;
     padding: 10px;
-    box-sizing: border-box;
-    text-align: center;
     border: 3px solid #A8C7BB;
-    position: relative;
-    font-size: 13px;
+    overflow: hidden;
+  }
+
+  .card-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .card-back-text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
   }
 
   .card-back h3 {
-    margin: 5px 0;
+    margin: 0;
     font-size: 11px;
     font-family: 'Montserrat', sans-serif;
     color: #392F5A;
@@ -182,7 +200,7 @@
   .card-back p {
     font-size: 10px;
     font-weight: normal;
-    margin: 0;
+    margin: 5px 0 0 0;
     color: #392F5A;
     font-style: normal;
     line-height: 1.2;
@@ -222,7 +240,7 @@
 
   /* 結果文字 */
   #result-text { 
-    margin-top: 60px;
+    margin-top: 40px;
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -262,8 +280,9 @@
   /* 響應式設計 */
   @media (max-width: 768px) {
     h1 { font-size: 2em; }
-    .spread-container { gap: 30px; padding: 20px; height: auto; }
+    .spread-container { gap: 30px; flex-direction: column; align-items: center; }
     .card-container { width: 130px; height: 220px; }
+    .card-wrapper { width: 150px; }
   }
 </style>
 </head>
@@ -281,8 +300,11 @@
       <div class="card" id="card-past">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-past">
-          <h3 id="name-past"></h3>
-          <p id="orientation-past"></p>
+          <img id="img-past" src="" alt="tarot card" style="display:none;">
+          <div class="card-back-text" id="text-past" style="display:flex;">
+            <h3 id="name-past"></h3>
+            <p id="orientation-past"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -295,8 +317,11 @@
       <div class="card" id="card-present">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-present">
-          <h3 id="name-present"></h3>
-          <p id="orientation-present"></p>
+          <img id="img-present" src="" alt="tarot card" style="display:none;">
+          <div class="card-back-text" id="text-present" style="display:flex;">
+            <h3 id="name-present"></h3>
+            <p id="orientation-present"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -309,8 +334,11 @@
       <div class="card" id="card-future">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-future">
-          <h3 id="name-future"></h3>
-          <p id="orientation-future"></p>
+          <img id="img-future" src="" alt="tarot card" style="display:none;">
+          <div class="card-back-text" id="text-future" style="display:flex;">
+            <h3 id="name-future"></h3>
+            <p id="orientation-future"></p>
+          </div>
         </div>
       </div>
     </div>

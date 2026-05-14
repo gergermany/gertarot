@@ -3,25 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>三牌陣塔羅占卜</title>
+<title>三牌陣塔羅占卜 | Art Nouveau Tarot</title>
 <style>
-  /* 基礎頁面設計 */
-  body { 
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-    text-align: center; 
-    background-color: #1a1a2e; 
-    color: #fff; 
-    padding: 20px; 
-  }
-  h1 { color: #e94560; }
+  /* 藝術新藝運風格基礎設計 */
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital@0;1&display=swap');
 
-  /* 牌陣容器 - 使用 Flexbox 平排顯示 */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body { 
+    font-family: 'Lora', 'Georgia', serif; 
+    text-align: center; 
+    background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #f0dcc8 100%);
+    color: #4a3728;
+    padding: 40px 20px;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 背景裝飾圖案 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(184, 134, 11, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(139, 69, 19, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  h1 { 
+    color: #8b4513;
+    font-family: 'Cinzel', serif;
+    font-size: 3em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 3px;
+  }
+
+  p {
+    color: #6b5344;
+    font-size: 1.1em;
+    font-style: italic;
+    margin-bottom: 25px;
+    font-family: 'Lora', serif;
+  }
+
+  /* 牌陣容器 */
   .spread-container {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin: 40px auto;
-    flex-wrap: wrap; /* 喺手機螢幕會自動換行 */
+    gap: 50px;
+    margin: 50px auto;
+    flex-wrap: wrap;
+    padding: 40px;
   }
 
   .card-wrapper {
@@ -31,111 +75,191 @@
   }
 
   .position-label {
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 20px;
+    font-size: 1.3em;
     font-weight: bold;
-    color: #f1c40f;
+    color: #8b4513;
     letter-spacing: 2px;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
   }
 
-  /* 塔羅牌容器與 3D 翻轉效果 */
+  /* 塔羅牌容器與翻轉效果 */
   .card-container { 
-    width: 160px; /* 稍微縮細張牌等三張都可以放得落畫面 */
-    height: 270px; 
-    perspective: 1000px; 
+    width: 160px;
+    height: 270px;
+    perspective: 1000px;
+    cursor: pointer;
   }
   
   .card { 
-    width: 100%; 
-    height: 100%; 
-    transition: transform 0.8s; 
-    transform-style: preserve-3d; 
-    position: relative; 
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3);
+    border-radius: 8px;
   }
   
   .card.flipped { 
-    transform: rotateY(180deg); 
+    transform: rotateY(180deg);
   }
 
   .card-face { 
-    width: 100%; 
-    height: 100%; 
-    position: absolute; 
-    backface-visibility: hidden; 
-    border-radius: 10px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 18px; 
-    border: 2px solid #e94560; 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 3px solid #c9a961;
   }
   
   .card-front { 
-    background: linear-gradient(135deg, #16213e, #0f3460);
-    color: white; 
-    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 10px, transparent 10px, transparent 20px);
+    background: linear-gradient(135deg, #d4af37 0%, #c9a961 50%, #d4af37 100%);
+    color: #5d4e37;
+    background-image: 
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px),
+      repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 10px, transparent 10px, transparent 20px);
+    position: relative;
+    font-weight: bold;
+    font-size: 3em;
+  }
+
+  .card-front::before,
+  .card-front::after {
+    content: '✦';
+    position: absolute;
+    color: #8b4513;
+    opacity: 0.5;
+    font-size: 1.5em;
+  }
+
+  .card-front::before {
+    top: 10px;
+    left: 10px;
+  }
+
+  .card-front::after {
+    bottom: 10px;
+    right: 10px;
   }
 
   .card-back { 
-    background-color: #fff; 
-    color: #1a1a2e;
-    transform: rotateY(180deg); 
-    flex-direction: column; 
-    padding: 10px; 
-    box-sizing: border-box; 
-    text-align: center; 
-    transition: transform 0.3s; 
+    background: linear-gradient(135deg, #f5e6d3 0%, #ede0d5 50%, #f5e6d3 100%);
+    color: #4a3728;
+    transform: rotateY(180deg);
+    flex-direction: column;
+    padding: 12px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 3px solid #c9a961;
   }
   
-  .card-back h3 { margin: 8px 0; font-size: 18px; }
-  .card-back p { font-size: 14px; font-weight: bold; margin: 0; }
+  .card-back h3 { 
+    margin: 6px 0;
+    font-size: 0.75em;
+    font-family: 'Cinzel', serif;
+    color: #8b4513;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .card-back p { 
+    font-size: 0.65em;
+    font-weight: normal;
+    margin: 0;
+    color: #6b5344;
+    font-style: normal;
+  }
 
   /* 按鈕設計 */
   button { 
-    background-color: #e94560; 
-    color: white; 
-    border: none; 
-    padding: 12px 24px; 
-    font-size: 18px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    transition: background-color 0.3s;
+    background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
+    color: #f5e6d3;
+    border: 2px solid #c9a961;
+    padding: 15px 40px;
+    font-size: 1.1em;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
     font-weight: bold;
-    margin-bottom: 10px;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    text-transform: uppercase;
   }
-  button:hover { background-color: #d1304b; }
-  button:disabled { background-color: #555; cursor: not-allowed; } /* 抽牌中禁用按鈕 */
+
+  button:hover { 
+    background: linear-gradient(135deg, #a0522d 0%, #8b4513 50%, #a0522d 100%);
+    box-shadow: 0 6px 16px rgba(139, 69, 19, 0.5);
+    transform: translateY(-2px);
+  }
+
+  button:disabled { 
+    background: #c4b5a0;
+    color: #8b7d6b;
+    cursor: not-allowed;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: #a89880;
+  }
 
   /* 結果文字 */
   #result-text { 
-    margin-top: 30px; 
-    max-width: 800px; 
-    margin-left: auto; 
-    margin-right: auto; 
-    line-height: 1.6; 
-    font-size: 16px;
-    background-color: rgba(255,255,255,0.1);
-    padding: 20px;
+    margin-top: 40px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+    font-size: 1em;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(201, 169, 97, 0.1) 100%);
+    padding: 30px;
     border-radius: 8px;
-    display: none; 
+    display: none;
     text-align: left;
+    border: 2px solid #c9a961;
+    color: #4a3728;
   }
   
   .result-section {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.4);
   }
-  .result-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
-  .result-title { color: #f1c40f; font-weight: bold; font-size: 18px; }
+
+  .result-section:last-child { 
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .result-title { 
+    color: #8b4513;
+    font-weight: bold;
+    font-size: 1.1em;
+    font-family: 'Cinzel', serif;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* 響應式設計 */
+  @media (max-width: 768px) {
+    h1 { font-size: 2em; }
+    .spread-container { gap: 30px; padding: 20px; }
+    .card-container { width: 130px; height: 220px; }
+  }
 </style>
 </head>
 <body>
 
-<h1>✨ 過去、現在、未來 牌陣 ✨</h1>
-<p>在心中默念你的問題，然後點擊下方按鈕</p>
+<h1>✦ 過去 · 現在 · 未來 ✦</h1>
+<p>靜心默念您的問題，然後點擊下方按鈕</p>
 <button id="drawBtn" onclick="drawCards()">為我抽三張牌</button>
 
 <div class="spread-container">
@@ -185,15 +309,95 @@
 <div id="result-text"></div>
 
 <script>
-// 1. 準備塔羅牌數據 (加入多幾張方便測試唔會重複)
+// 完整78張塔羅牌牌組
 const tarotDeck = [
+  // 大阿卡那 (0-21)
   { name: "0. 愚者", upright: "新的開始、冒險、純真。", reversed: "魯莽、不負責任、錯失良機。" },
   { name: "I. 魔術師", upright: "創造力、行動力、溝通。", reversed: "欺騙、缺乏自信、能力不足。" },
   { name: "II. 女祭司", upright: "直覺、潛意識、神秘。", reversed: "隱藏的秘密、膚淺、情緒化。" },
   { name: "III. 皇后", upright: "豐收、母性、感官的美好。", reversed: "過度放縱、依賴、資源浪費。" },
   { name: "IV. 皇帝", upright: "權威、結構、穩定。", reversed: "專制、死板、失去控制。" },
   { name: "V. 教皇", upright: "傳統、信仰、教育。", reversed: "盲從、叛逆、打破常規。" },
-  { name: "VI. 戀人", upright: "愛情、選擇、和諧。", reversed: "分離、錯誤的選擇、誘惑。" }
+  { name: "VI. 戀人", upright: "愛情、選擇、和諧。", reversed: "分離、錯誤的選擇、誘惑。" },
+  { name: "VII. 戰車", upright: "勝利、意志力、決心。", reversed: "失去控制、挫折、衝突。" },
+  { name: "VIII. 力量", upright: "內在力量、耐心、溫柔。", reversed: "脆弱、自我懷疑、軟弱。" },
+  { name: "IX. 隱者", upright: "反思、智慧、內省。", reversed: "孤立、隱藏、迷茫。" },
+  { name: "X. 命運輪", upright: "幸運、循環、新機會。", reversed: "厄運、停滯、逆轉。" },
+  { name: "XI. 正義", upright: "公正、真理、因果。", reversed: "不公正、欺騙、失衡。" },
+  { name: "XII. 吊人", upright: "犧牲、放手、新視角。", reversed: "執著、延遲、拒絕改變。" },
+  { name: "XIII. 死神", upright: "轉變、結束、新生。", reversed: "停滯、拒絕改變、恐懼。" },
+  { name: "XIV. 節制", upright: "平衡、調和、溫和。", reversed: "不平衡、衝動、過度。" },
+  { name: "XV. 魔鬼", upright: "束縛、物質、誘惑。", reversed: "解脫、放鬆、克服恐懼。" },
+  { name: "XVI. 高塔", upright: "突變、啟示、毀滅。", reversed: "避免災難、逃脫、解放。" },
+  { name: "XVII. 星星", upright: "希望、靈感、引導。", reversed: "絕望、失去方向、幻滅。" },
+  { name: "XVIII. 月亮", upright: "直覺、幻想、潛意識。", reversed: "清晰、幻覺結束、真相。" },
+  { name: "XIX. 太陽", upright: "成功、快樂、光明。", reversed: "失敗、悲傷、黑暗。" },
+  { name: "XX. 審判", upright: "覺醒、判決、重生。", reversed: "自我懷疑、延遲、否認。" },
+  { name: "XXI. 世界", upright: "完成、達成、統一。", reversed: "不完整、無法完成、分裂。" },
+
+  // 聖杯牌組 (22-35)
+  { name: "聖杯王牌", upright: "新的感情、靈感、新開始。", reversed: "機會流失、情感空虛。" },
+  { name: "聖杯二", upright: "合作、愛情、伙伴關係。", reversed: "分離、失衡、誤會。" },
+  { name: "聖杯三", upright: "慶祝、友誼、歡樂。", reversed: "過度放縱、虛偽的快樂。" },
+  { name: "聖杯四", upright: "冷淡、停滯、缺乏興趣。", reversed: "恢復、重新開始、新視角。" },
+  { name: "聖杯五", upright: "失望、失落、遺憾。", reversed: "寬恕、治療、放手。" },
+  { name: "聖杯六", upright: "懷舊、幸福、童年回憶。", reversed: "向前看、放棄過去。" },
+  { name: "聖杯七", upright: "幻想、選擇、機會。", reversed: "清晰、現實、不切實際。" },
+  { name: "聖杯八", upright: "放棄、轉身離開、逃避。", reversed: "新視角、回歸、完成。" },
+  { name: "聖杯九", upright: "幸福、滿足、夢想實現。", reversed: "不滿足、空虛、失望。" },
+  { name: "聖杯十", upright: "家庭和諧、愛與幸福。", reversed: "家庭不和、分裂。" },
+  { name: "聖杯侍者", upright: "敏感、年輕、有才華。", reversed: "不成熟、過度敏感。" },
+  { name: "聖杯騎士", upright: "浪漫、夢想家、創意。", reversed: "不切實際、逃避、懦弱。" },
+  { name: "聖杯皇后", upright: "有愛心、直覺、情感。", reversed: "情感波動、過度執著。" },
+  { name: "聖杯國王", upright: "智慧、溫和、精神領導。", reversed: "操縱、情感不穩定。" },
+
+  // 權杖牌組 (36-49)
+  { name: "���杖王牌", upright: "靈感、新項目、激情。", reversed: "停滯、缺乏靈感、延遲。" },
+  { name: "權杖二", upright: "計畫、決策、遠景。", reversed: "困惑、無方向、猶豫。" },
+  { name: "權杖三", upright: "合作、遠景、成長。", reversed: "延遲、缺乏合作。" },
+  { name: "權杖四", upright: "慶祝、成功、和平。", reversed: "無聊、不穩定、衝突。" },
+  { name: "權杖五", upright: "競爭、衝突、挑戰。", reversed: "協議、避免衝突。" },
+  { name: "權杖六", upright: "成功、認可、領導。", reversed: "失敗、批評、失去信心。" },
+  { name: "權杖七", upright: "防衛、挑戰、堅持。", reversed: "放棄、退縮、信心不足。" },
+  { name: "權杖八", upright: "快速行動、能量、動力。", reversed: "延遲、缺乏方向。" },
+  { name: "權杖九", upright: "韌性、決心、邊界。", reversed: "懼怕、不安全、多疑。" },
+  { name: "權杖十", upright: "負擔、責任、壓力。", reversed: "放開、寬恕、輕鬆。" },
+  { name: "權杖侍者", upright: "勤奮、有才華、忠誠。", reversed: "缺乏方向、無紀律。" },
+  { name: "權杖騎士", upright: "充滿激情、冒險、浪漫。", reversed: "魯莽、好鬥、不負責任。" },
+  { name: "權杖皇后", upright: "有魅力、獨立、有熱情。", reversed: "嫉妒、任性、不友善。" },
+  { name: "權杖國王", upright: "領導、視野、力量。", reversed: "獨裁、傲慢、無能。" },
+
+  // 寶劍牌組 (50-63)
+  { name: "寶劍王牌", upright: "真理、清晰、突破。", reversed: "混亂、無法溝通。" },
+  { name: "寶劍二", upright: "衝突、困境、僵局。", reversed: "解決方案、協議。" },
+  { name: "寶劍三", upright: "心碎、悲傷、痛苦。", reversed: "治療、寬恕、恢復。" },
+  { name: "寶劍四", upright: "休息、冥想、安定。", reversed: "不安定、混亂、衝突。" },
+  { name: "寶劍五", upright: "衝突、失敗、悲傷。", reversed: "原諒、仁慈、和解。" },
+  { name: "寶劍六", upright: "旅程、過渡、悲傷。", reversed: "進展、完成旅程。" },
+  { name: "寶劍七", upright: "竊取、背叛、間諜。", reversed: "真實顯露、警惕。" },
+  { name: "寶劍八", upright: "困境、被束縛、困惑。", reversed: "逃脫、自由、澄清。" },
+  { name: "寶劍九", upright: "絕望、恐懼、焦慮。", reversed: "希望、康復、勇氣。" },
+  { name: "寶劍十", upright: "痛苦、結束、背叛。", reversed: "康復、結束痛苦。" },
+  { name: "寶劍侍者", upright: "觀察者、感知、訊息。", reversed: "缺乏感知、消息延遲。" },
+  { name: "寶劍騎士", upright: "勇敢、激進、理性。", reversed: "衝動、無謀、不成熟。" },
+  { name: "寶劍皇后", upright: "獨立、敏銳、智慧。", reversed: "冷酷、殘酷、偏見。" },
+  { name: "寶劍國王", upright: "真理、正義、清晰。", reversed: "殘酷、虛偽、混亂。" },
+
+  // 錢幣牌組 (64-77)
+  { name: "錢幣王牌", upright: "豐盛、繁榮、新機會。", reversed: "貧窮、資源不足。" },
+  { name: "錢幣二", upright: "平衡、靈活、決策。", reversed: "不平衡、延遲、失衡。" },
+  { name: "錢幣三", upright: "合作、工作小組、技能。", reversed: "缺乏技能、無法合作。" },
+  { name: "錢幣四", upright: "豐盛、財富、守財。", reversed: "貪婪、失去、奢侈。" },
+  { name: "錢幣五", upright: "貧困、困難、困境。", reversed: "恢復、幫助、改善。" },
+  { name: "錢幣六", upright: "給予、獲得、慷慨。", reversed: "自私、不平等、虐待。" },
+  { name: "錢幣七", upright: "成長、收穫、投資回報。", reversed: "缺乏成長、停滯、浪費。" },
+  { name: "錢幣八", upright: "學徒、技能、勤奮。", reversed: "不夠熟練、過度工作。" },
+  { name: "錢幣九", upright: "豐裕、自給自足、安全。", reversed: "不安全、焦慮、浪費。" },
+  { name: "錢幣十", upright: "財富、家庭、遺產。", reversed: "家庭衝突、財務問題。" },
+  { name: "錢幣侍者", upright: "學生、信使、謹慎。", reversed: "虛度、缺乏野心。" },
+  { name: "錢幣騎士", upright: "可靠、勤奮、負責任。", reversed: "懶惰、不可靠、浪費。" },
+  { name: "錢幣皇后", upright: "實踐、安全、丰富。", reversed: "浪費、不安全、匱乏。" },
+  { name: "錢幣國王", upright: "財富、商業、領導力。", reversed: "無能、不穩定、貪婪。" }
 ];
 
 const positions = ['past', 'present', 'future'];
@@ -203,10 +407,8 @@ function drawCards() {
   const drawBtn = document.getElementById('drawBtn');
   const resultTextEl = document.getElementById('result-text');
   
-  // 禁用按鈕防止連續點擊
   drawBtn.disabled = true;
 
-  // 檢查是否已經有牌翻開，如果有就先全部蓋上
   let cardsAlreadyFlipped = false;
   positions.forEach(pos => {
     const cardEl = document.getElementById(`card-${pos}`);
@@ -218,7 +420,6 @@ function drawCards() {
 
   resultTextEl.style.display = 'none';
 
-  // 如果有牌要蓋上，等 0.8秒 動畫完結後再抽牌；否則直接抽牌
   if (cardsAlreadyFlipped) {
     setTimeout(performDraw, 800);
   } else {
@@ -226,26 +427,18 @@ function drawCards() {
   }
 
   function performDraw() {
-    // 複製一份牌庫，用作抽牌避免重複
     let availableDeck = [...tarotDeck];
-    let drawnCards = [];
     let resultsHTML = '';
 
-    // 抽三張牌的邏輯
     for (let i = 0; i < 3; i++) {
-      // 從剩餘的牌庫中隨機抽一張
       const randomIndex = Math.floor(Math.random() * availableDeck.length);
       const selectedCard = availableDeck[randomIndex];
       
-      // 將抽中的牌移出 availableDeck，確保下一張唔會抽中同一張
       availableDeck.splice(randomIndex, 1);
       
-      // 隨機正逆位
       const isReversed = Math.random() > 0.5;
-      
       const pos = positions[i];
       
-      // 更新 DOM
       document.getElementById(`name-${pos}`).innerText = selectedCard.name;
       const orientationEl = document.getElementById(`orientation-${pos}`);
       const backEl = document.getElementById(`back-${pos}`);
@@ -254,36 +447,31 @@ function drawCards() {
 
       if (isReversed) {
         orientationEl.innerText = "(逆位)";
-        orientationEl.style.color = "#ff4757";
+        orientationEl.style.color = "#a0522d";
         backEl.style.transform = "rotateY(180deg) rotateZ(180deg)";
         interpretation = selectedCard.reversed;
       } else {
         orientationEl.innerText = "(正位)";
-        orientationEl.style.color = "#2ed573";
+        orientationEl.style.color = "#8b4513";
         backEl.style.transform = "rotateY(180deg) rotateZ(0deg)";
         interpretation = selectedCard.upright;
       }
 
-      // 準備結果文字的 HTML
       resultsHTML += `
         <div class="result-section">
           <span class="result-title">${positionLabels[i]}：</span> 
-          ${selectedCard.name} ${isReversed ? '<span style="color:#ff4757">(逆位)</span>' : '<span style="color:#2ed573">(正位)</span>'}<br>
+          ${selectedCard.name} ${isReversed ? '<span style="color:#a0522d">(逆位)</span>' : '<span style="color:#8b4513">(正位)</span>'}<br>
           ${interpretation}
         </div>
       `;
 
-      // 設定延遲翻牌動畫 (製造一張張打開的懸念效果)
-      // 過去：等待100ms, 現在：等待600ms, 未來：等待1100ms
       setTimeout(() => {
         document.getElementById(`card-${pos}`).classList.add('flipped');
       }, 100 + (i * 500));
     }
 
-    // 更新並顯示結果文字
     resultTextEl.innerHTML = resultsHTML;
     
-    // 當三張牌都翻開後 (大約 1100ms + 翻牌時間)，顯示結果並解開按鈕鎖定
     setTimeout(() => {
       resultTextEl.style.display = 'block';
       drawBtn.disabled = false;

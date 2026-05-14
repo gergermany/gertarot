@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三牌陣塔羅占卜</title>
+<style>
+  /* 基礎頁面設計 */
+  body { 
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    text-align: center; 
+    background-color: #1a1a2e; 
+    color: #fff; 
+    padding: 20px; 
+  }
+  h1 { color: #e94560; }
+
+  /* 牌陣容器 - 使用 Flexbox 平排顯示 */
+  .spread-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px auto;
+    flex-wrap: wrap; /* 喺手機螢幕會自動換行 */
+  }
+
+  .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .position-label {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #f1c40f;
+    letter-spacing: 2px;
+  }
+
+  /* 塔羅牌容器與 3D 翻轉效果 */
+  .card-container { 
+    width: 160px; /* 稍微縮細張牌等三張都可以放得落畫面 */
+    height: 270px; 
+    perspective: 1000px; 
+  }
+  
+  .card { 
+    width: 100%; 
+    height: 100%; 
+    transition: transform 0.8s; 
+    transform-style: preserve-3d; 
+    position: relative; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    border-radius: 10px;
+  }
+  
+  .card.flipped { 
+    transform: rotateY(180deg); 
+  }
+
+  .card-face { 
+    width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    backface-visibility: hidden; 
+    border-radius: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 18px; 
+    border: 2px solid #e94560; 
+  }
+  
+  .card-front { 
+    background: linear-gradient(135deg, #16213e, #0f3460);
+    color: white; 
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 10px, transparent 10px, transparent 20px);
+  }
+
+  .card-back { 
+    background-color: #fff; 
+    color: #1a1a2e;
+    transform: rotateY(180deg); 
+    flex-direction: column; 
+    padding: 10px; 
+    box-sizing: border-box; 
+    text-align: center; 
+    transition: transform 0.3s; 
+  }
+  
+  .card-back h3 { margin: 8px 0; font-size: 18px; }
+  .card-back p { font-size: 14px; font-weight: bold; margin: 0; }
+
+  /* 按鈕設計 */
+  button { 
+    background-color: #e94560; 
+    color: white; 
+    border: none; 
+    padding: 12px 24px; 
+    font-size: 18px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    transition: background-color 0.3s;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  button:hover { background-color: #d1304b; }
+  button:disabled { background-color: #555; cursor: not-allowed; } /* 抽牌中禁用按鈕 */
+
+  /* 結果文字 */
+  #result-text { 
+    margin-top: 30px; 
+    max-width: 800px; 
+    margin-left: auto; 
+    margin-right: auto; 
+    line-height: 1.6; 
+    font-size: 16px;
+    background-color: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 8px;
+    display: none; 
+    text-align: left;
+  }
+  
+  .result-section {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .result-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+  .result-title { color: #f1c40f; font-weight: bold; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<h1>✨ 過去、現在、未來 牌陣 ✨</h1>
+<p>在心中默念你的問題，然後點擊下方按鈕</p>
+<button id="drawBtn" onclick="drawCards()">為我抽三張牌</button>
+
+<div class="spread-container">
+  <!-- 過去 -->
+  <div class="card-wrapper">
+    <div class="position-label">【過去】</div>
+    <div class="card-container">
+      <div class="card" id="card-past">
+        <div class="card-face card-front">🔮</div>
+        <div class="card-face card-back" id="back-past">
+          <h3 id="name-past"></h3>
+          <p id="orientation-past"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 現在 -->
+  <div class="card-wrapper">
+    <div class="position-label">【現在】</div>
+    <div class="card-container">
+      <div class="card" id="card-present">
+        <div class="card-face card-front">🔮</div>
+        <div class="card-face card-back" id="back-present">
+          <h3 id="name-present"></h3>
+          <p id="orientation-present"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 未來 -->
+  <div class="card-wrapper">
+    <div class="position-label">【未來】</div>
+    <div class="card-container">
+      <div class="card" id="card-future">
+        <div class="card-face card-front">🔮</div>
+        <div class="card-face card-back" id="back-future">
+          <h3 id="name-future"></h3>
+          <p id="orientation-future"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="result-text"></div>
+
+<script>
+// 1. 準備塔羅牌數據 (加入多幾張方便測試唔會重複)
+const tarotDeck = [
+  { name: "0. 愚者", upright: "新的開始、冒險、純真。", reversed: "魯莽、不負責任、錯失良機。" },
+  { name: "I. 魔術師", upright: "創造力、行動力、溝通。", reversed: "欺騙、缺乏自信、能力不足。" },
+  { name: "II. 女祭司", upright: "直覺、潛意識、神秘。", reversed: "隱藏的秘密、膚淺、情緒化。" },
+  { name: "III. 皇后", upright: "豐收、母性、感官的美好。", reversed: "過度放縱、依賴、資源浪費。" },
+  { name: "IV. 皇帝", upright: "權威、結構、穩定。", reversed: "專制、死板、失去控制。" },
+  { name: "V. 教皇", upright: "傳統、信仰、教育。", reversed: "盲從、叛逆、打破常規。" },
+  { name: "VI. 戀人", upright: "愛情、選擇、和諧。", reversed: "分離、錯誤的選擇、誘惑。" }
+];
+
+const positions = ['past', 'present', 'future'];
+const positionLabels = ['過去 (影響現狀的原因)', '現在 (目前的處境)', '未來 (發展的趨勢)'];
+
+function drawCards() {
+  const drawBtn = document.getElementById('drawBtn');
+  const resultTextEl = document.getElementById('result-text');
+  
+  // 禁用按鈕防止連續點擊
+  drawBtn.disabled = true;
+
+  // 檢查是否已經有牌翻開，如果有就先全部蓋上
+  let cardsAlreadyFlipped = false;
+  positions.forEach(pos => {
+    const cardEl = document.getElementById(`card-${pos}`);
+    if (cardEl.classList.contains('flipped')) {
+      cardEl.classList.remove('flipped');
+      cardsAlreadyFlipped = true;
+    }
+  });
+
+  resultTextEl.style.display = 'none';
+
+  // 如果有牌要蓋上，等 0.8秒 動畫完結後再抽牌；否則直接抽牌
+  if (cardsAlreadyFlipped) {
+    setTimeout(performDraw, 800);
+  } else {
+    performDraw();
+  }
+
+  function performDraw() {
+    // 複製一份牌庫，用作抽牌避免重複
+    let availableDeck = [...tarotDeck];
+    let drawnCards = [];
+    let resultsHTML = '';
+
+    // 抽三張牌的邏輯
+    for (let i = 0; i < 3; i++) {
+      // 從剩餘的牌庫中隨機抽一張
+      const randomIndex = Math.floor(Math.random() * availableDeck.length);
+      const selectedCard = availableDeck[randomIndex];
+      
+      // 將抽中的牌移出 availableDeck，確保下一張唔會抽中同一張
+      availableDeck.splice(randomIndex, 1);
+      
+      // 隨機正逆位
+      const isReversed = Math.random() > 0.5;
+      
+      const pos = positions[i];
+      
+      // 更新 DOM
+      document.getElementById(`name-${pos}`).innerText = selectedCard.name;
+      const orientationEl = document.getElementById(`orientation-${pos}`);
+      const backEl = document.getElementById(`back-${pos}`);
+      
+      let interpretation = "";
+
+      if (isReversed) {
+        orientationEl.innerText = "(逆位)";
+        orientationEl.style.color = "#ff4757";
+        backEl.style.transform = "rotateY(180deg) rotateZ(180deg)";
+        interpretation = selectedCard.reversed;
+      } else {
+        orientationEl.innerText = "(正位)";
+        orientationEl.style.color = "#2ed573";
+        backEl.style.transform = "rotateY(180deg) rotateZ(0deg)";
+        interpretation = selectedCard.upright;
+      }
+
+      // 準備結果文字的 HTML
+      resultsHTML += `
+        <div class="result-section">
+          <span class="result-title">${positionLabels[i]}：</span> 
+          ${selectedCard.name} ${isReversed ? '<span style="color:#ff4757">(逆位)</span>' : '<span style="color:#2ed573">(正位)</span>'}<br>
+          ${interpretation}
+        </div>
+      `;
+
+      // 設定延遲翻牌動畫 (製造一張張打開的懸念效果)
+      // 過去：等待100ms, 現在：等待600ms, 未來：等待1100ms
+      setTimeout(() => {
+        document.getElementById(`card-${pos}`).classList.add('flipped');
+      }, 100 + (i * 500));
+    }
+
+    // 更新並顯示結果文字
+    resultTextEl.innerHTML = resultsHTML;
+    
+    // 當三張牌都翻開後 (大約 1100ms + 翻牌時間)，顯示結果並解開按鈕鎖定
+    setTimeout(() => {
+      resultTextEl.style.display = 'block';
+      drawBtn.disabled = false;
+    }, 1800);
+  }
+}
+</script>
+
+</body>
+</html>

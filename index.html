@@ -17,7 +17,7 @@
   body { 
     font-family: 'Open Sans', 'Segoe UI', Arial, sans-serif; 
     text-align: center; 
-    background: linear-gradient(135deg, #EEC8E0 0%, #F092DD 50%, #EEC8E0 100%);
+    background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 50%, #A8C7BB 100%);
     color: #392F5A;
     padding: 40px 20px 60px 20px;
     min-height: 100vh;
@@ -34,7 +34,7 @@
     width: 100%;
     height: 100%;
     background-image: 
-      radial-gradient(circle at 20% 50%, rgba(255, 175, 240, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 20% 50%, rgba(238, 200, 224, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(57, 47, 90, 0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: -1;
@@ -58,7 +58,7 @@
     font-family: 'Open Sans', sans-serif;
   }
 
-  /* 牌陣容器 */
+  /* 牌陣容器 - 固定高度防止位移 */
   .spread-container {
     display: flex;
     justify-content: center;
@@ -66,7 +66,8 @@
     margin: 50px auto;
     flex-wrap: wrap;
     padding: 40px;
-    min-height: 450px;
+    height: 420px;
+    align-items: flex-start;
   }
 
   .card-wrapper {
@@ -74,6 +75,7 @@
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
+    height: 100%;
   }
 
   .position-label {
@@ -84,6 +86,7 @@
     letter-spacing: 2px;
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
+    flex-shrink: 0;
   }
 
   /* 塔羅牌容器與翻轉效果 */
@@ -92,6 +95,7 @@
     height: 270px;
     perspective: 1000px;
     cursor: pointer;
+    flex-shrink: 0;
   }
   
   .card { 
@@ -119,12 +123,12 @@
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    border: 3px solid #FFAFF0;
+    border: 3px solid #A8C7BB;
     overflow: hidden;
   }
   
   .card-front { 
-    background: linear-gradient(135deg, #FFAFF0 0%, #F092DD 50%, #FFAFF0 100%);
+    background: linear-gradient(135deg, #EEC8E0 0%, #A8C7BB 50%, #EEC8E0 100%);
     color: #392F5A;
     background-image: 
       repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px),
@@ -154,46 +158,39 @@
   }
 
   .card-back { 
-    background: linear-gradient(135deg, #EEC8E0 0%, #F092DD 50%, #EEC8E0 100%);
+    background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 50%, #A8C7BB 100%);
     color: #392F5A;
     transform: rotateY(180deg);
     flex-direction: column;
-    padding: 0;
+    padding: 10px;
     box-sizing: border-box;
     text-align: center;
-    border: 3px solid #FFAFF0;
+    border: 3px solid #A8C7BB;
     position: relative;
+    font-size: 13px;
   }
 
-  .card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 5px;
-  }
-
-  .card-image-fallback {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 100%);
-    font-size: 3em;
+  .card-back h3 {
+    margin: 5px 0;
+    font-size: 11px;
+    font-family: 'Montserrat', sans-serif;
     color: #392F5A;
-    flex-direction: column;
+    font-weight: 600;
+    line-height: 1.1;
   }
 
-  .card-image-fallback span {
-    font-size: 0.5em;
-    margin-top: 10px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: bold;
+  .card-back p {
+    font-size: 10px;
+    font-weight: normal;
+    margin: 0;
+    color: #392F5A;
+    font-style: normal;
+    line-height: 1.2;
   }
   
   /* 按鈕設計 */
   button { 
-    background: linear-gradient(135deg, #F092DD 0%, #FFAFF0 50%, #F092DD 100%);
+    background: linear-gradient(135deg, #A8C7BB 0%, #EEC8E0 50%, #A8C7BB 100%);
     color: #392F5A;
     border: 2px solid #392F5A;
     padding: 15px 40px;
@@ -210,17 +207,17 @@
   }
 
   button:hover { 
-    background: linear-gradient(135deg, #FFAFF0 0%, #F092DD 50%, #FFAFF0 100%);
+    background: linear-gradient(135deg, #EEC8E0 0%, #A8C7BB 50%, #EEC8E0 100%);
     box-shadow: 0 6px 16px rgba(57, 47, 90, 0.5);
     transform: translateY(-2px);
   }
 
   button:disabled { 
-    background: #A8C7BB;
-    color: #392F5A;
+    background: #D4D4D4;
+    color: #999;
     cursor: not-allowed;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border-color: #392F5A;
+    border-color: #999;
   }
 
   /* 結果文字 */
@@ -231,12 +228,12 @@
     margin-right: auto;
     line-height: 1.8;
     font-size: 1em;
-    background: linear-gradient(135deg, rgba(240, 146, 221, 0.15) 0%, rgba(168, 199, 187, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(168, 199, 187, 0.15) 0%, rgba(238, 200, 224, 0.1) 100%);
     padding: 30px;
     border-radius: 8px;
     display: none;
     text-align: left;
-    border: 2px solid #FFAFF0;
+    border: 2px solid #A8C7BB;
     color: #392F5A;
     font-family: 'Open Sans', sans-serif;
   }
@@ -265,7 +262,7 @@
   /* 響應式設計 */
   @media (max-width: 768px) {
     h1 { font-size: 2em; }
-    .spread-container { gap: 30px; padding: 20px; }
+    .spread-container { gap: 30px; padding: 20px; height: auto; }
     .card-container { width: 130px; height: 220px; }
   }
 </style>
@@ -284,10 +281,8 @@
       <div class="card" id="card-past">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-past">
-          <div class="card-image-fallback" id="fallback-past">
-            <span id="name-past"></span>
-            <span id="orientation-past"></span>
-          </div>
+          <h3 id="name-past"></h3>
+          <p id="orientation-past"></p>
         </div>
       </div>
     </div>
@@ -300,10 +295,8 @@
       <div class="card" id="card-present">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-present">
-          <div class="card-image-fallback" id="fallback-present">
-            <span id="name-present"></span>
-            <span id="orientation-present"></span>
-          </div>
+          <h3 id="name-present"></h3>
+          <p id="orientation-present"></p>
         </div>
       </div>
     </div>
@@ -316,10 +309,8 @@
       <div class="card" id="card-future">
         <div class="card-face card-front">🔮</div>
         <div class="card-face card-back" id="back-future">
-          <div class="card-image-fallback" id="fallback-future">
-            <span id="name-future"></span>
-            <span id="orientation-future"></span>
-          </div>
+          <h3 id="name-future"></h3>
+          <p id="orientation-future"></p>
         </div>
       </div>
     </div>
@@ -462,7 +453,6 @@ function drawCards() {
       // Update card display
       const nameEl = document.getElementById(`name-${pos}`);
       const orientationEl = document.getElementById(`orientation-${pos}`);
-      const fallbackEl = document.getElementById(`fallback-${pos}`);
       
       nameEl.innerText = selectedCard.name;
       
@@ -471,19 +461,17 @@ function drawCards() {
       if (isReversed) {
         orientationEl.innerText = "(逆位)";
         orientationEl.style.color = "#F092DD";
-        fallbackEl.style.transform = "rotateZ(180deg)";
         interpretation = selectedCard.reversed;
       } else {
         orientationEl.innerText = "(正位)";
-        orientationEl.style.color = "#FFAFF0";
-        fallbackEl.style.transform = "rotateZ(0deg)";
+        orientationEl.style.color = "#EEC8E0";
         interpretation = selectedCard.upright;
       }
 
       resultsHTML += `
         <div class="result-section">
           <span class="result-title">${positionLabels[i]}：</span> 
-          ${selectedCard.name} ${isReversed ? '<span style="color:#F092DD">(逆位)</span>' : '<span style="color:#FFAFF0">(正位)</span>'}<br>
+          ${selectedCard.name} ${isReversed ? '<span style="color:#F092DD">(逆位)</span>' : '<span style="color:#EEC8E0">(正位)</span>'}<br>
           ${interpretation}
         </div>
       `;
